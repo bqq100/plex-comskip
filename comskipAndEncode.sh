@@ -11,6 +11,8 @@ DELETE_ORIG="true"
 ALLOW_REPLACE="false"
 COMSKIP="true"
 SUBTITLES="true"
+FIRST_COMSKIP_INI="./comskip.ini"
+SECOND_COMSKIP_INI="./comskip.default.ini"
 
 source /etc/plex-comskip.conf
 
@@ -242,7 +244,7 @@ if [[ "${COMSKIP}" == "true" ]]; then
   if [[ "${TITLE}" != "" ]]; then
     echo "title=${TITLE}" >> "${INIT_DIR}/chapters.meta"
   fi
-  ${BIN_DIR}/comskip "${FILE}" --output="${INIT_DIR}"
+  ${BIN_DIR}/comskip --ini="${FIRST_COMSKIP_INI}" --output="${INIT_DIR}" "${FILE}" || ${BIN_DIR}/comskip --ini="${SECOND_COMSKIP_INI}" --output="${INIT_DIR}" "${FILE}" || ${BIN_DIR}/comskip --output="${INIT_DIR}" "${FILE}"
   $(cat "${INIT_DIR}"/*.xml | grep start | sed 's/\s*<commercial\s//;s/\s\/>//;s/\s/\n/;s/start=//;s/end=//;s/"//g' | awk 'BEGIN{start=0;end=0;cnt=0;} //{start=end;end=$1;print "[CHAPTER]";print "TIMEBASE=1/10000000";printf("START=%d\n",start*10000000);printf("END=%d\n",end*10000000);if(cnt%2==0){print "title=Show"}else{print"title=Commercial"};cnt=cnt+1}' >> "${INIT_DIR}/chapters.meta")
 fi
 
