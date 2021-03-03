@@ -60,7 +60,7 @@ while [[ "1" == "1" ]]; do
     else
       cat "${WORK_DIR}/${WORK_FILE}" | while read REC_FILE; do
 
-        SEARCH_FILE=$(basename "${REC_FILE}")
+        SEARCH_FILE=$(basename "${REC_FILE}" | sed 's/\[/\\\[/' | sed 's/\]/\\\]]/')
         SEARCH_PATH=$(dirname "${REC_FILE}" | sed 's/\/\.grab.*//')
         SEARCH_FILE_EXT="${SEARCH_FILE##*.}"
         SEARCH_FILE_NAME="${SEARCH_FILE%.*}"
